@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulateur de Calcul sur les Dates</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+
+
+
+
+
+
+
+<body>
+    <div class="container">
+        <h2>🕒 Simulateur de Calcul sur les Dates</h2>
+
+        <label for="selectedDate">📅 Sélectionnez une date :</label>
+        <input type="date" id="selectedDate">
+
+        <label for="number">📅 Nombre de jours/mois/années :</label>
+        <input type="number" id="number">
+
+        <label for="type">📅 Type :</label>
+        <select id="type">
+            <option value="days">Jours</option>
+            <option value="months">Mois</option>
+            <option value="years">Années</option>
+        </select>
+
+        <button onclick="calculateDate(true)">➕ Ajouter</button>
+        <button onclick="calculateDate(false)">➖ Soustraire</button>
+
+        <p>📅 Nouvelle date : <span id="newDate">-</span></p>
+
+        <h3>🆚 Comparer deux dates</h3>
+        <label for="secondDate">📅 Deuxième date :</label>
+        <input type="date" id="secondDate">
+        <button onclick="compareDates()">🔢 Calculer la différence</button>
+
+        <p>📏 Différence : <span id="difference">-</span></p>
+
+        <h3>🎂 Calcul de l'âge</h3>
+        <label for="birthDate">📅 Date de naissance :</label>
+        <input type="date" id="birthDate">
+        <button onclick="calculateAge()">🎯 Calculer l'âge</button>
+
+        <p>🎂 Âge : <span id="age">-</span></p>
+
+        <h3>🕰️ Conversion de Date</h3>
+        <button onclick="convertDate()">🔄 Convertir en différents formats</button>
+
+        <p>ISO : <span id="iso">-</span></p>
+        <p>Locale : <span id="locale">-</span></p>
+        <p>UTC : <span id="utc">-</span></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
