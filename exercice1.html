@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercice 1</title>
+    <script>
+        let paragraphCount = 0;
+
+        function addParagraph() {
+            paragraphCount++;
+            const container = document.getElementById('container');
+            const newParagraph = document.createElement('p');
+            newParagraph.textContent = `Paragraphe numéro ${paragraphCount}`;
+            container.appendChild(newParagraph);
+        }
+    </script>
+</head>
+
+<body>
+    <div id="container"></div>
+    <button onclick="addParagraph()">Ajouter un paragraphe</button>
+</body>
+
+</html>

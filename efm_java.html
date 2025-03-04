@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce - Gestion Panier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        #badge-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+        }
+        
+        #search-bar {
+            margin-bottom: 20px;
+        }
+        
+        #categories {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .btn-categorie {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        
+        #produits-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .produit-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .produit-item img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .prix {
+            font-weight: bold;
+            color: #e63946;
+        }
+        
+        .btn-ajouter {
+            background: #457b9d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+        
+        #panier {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100%;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        #panier.visible {
+            display: block;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .btn-minus,
+        .btn-plus,
+        .btn-remove {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Mon E-commerce</h1>
+        <div class="cart-icon" id="cart-button">
+            🛒 <span id="badge-count">0</span>
+        </div>
+    </header>
+
+    <div id="search-bar">
+        <input type="text" id="search-input" placeholder="Rechercher un produit...">
+    </div>
+
+    <div id="categories">
+        <button class="btn-categorie" data-categorie="tous">Tous</button>
+        <button class="btn-categorie" data-categorie="smartphone">Smartphones</button>
+        <button class="btn-categorie" data-categorie="laptop">Laptops</button>
+    </div>
+
+    <div id="produits-container">
+    </div>
+
+    <div id="panier">
+        <h2>Votre Panier</h2>
+        <div id="panier-container">
+        </div>
+    </div>
+
+    <script>
+        const produits = [{
+            id: 1,
+            titre: "Smartphone 1",
+            prix: 2500,
+            image: "https://picsum.photos/200/200",
+            categorie: "smartphone"
+        }, {
+            id: 2,
+            titre: "Smartphone 2",
+            prix: 3500,
+            image: "https://picsum.photos/200/200",
+            categorie: "smartphone"
+        }, {
+            id: 3,
+            titre: "Laptop 1",
+            prix: 5000,
+            image: "https://picsum.photos/200/200",
+            categorie: "laptop"
+        }, {
+            id: 4,
+            titre: "Laptop 2",
+            prix: 7000,
+            image: "https://picsum.photos/200/200",
+            categorie: "laptop"
+        }];
+
+        let panier = JSON.parse(localStorage.getItem("panier")) || [];
+
+        function mettreAJourPanier() {
+            document.getElementById("badge-count").textContent = panier.reduce((total, p) => total + p.qtc, 0);
+            localStorage.setItem("panier", JSON.stringify(panier));
+            afficherPanier();
+        }
+
+        function ajouterProduit(id) {
+            let produit = produits.find(p => p.id === id);
+            let item = panier.find(p => p.id === id);
+            item ? item.qtc++ : panier.push({...produit,
+                qtc: 1
+            });
+            mettreAJourPanier();
+            alert(`${produit.titre} ajouté au panier!`);
+        }
+
+        function afficherProduits(filtre = "tous") {
+            let container = document.getElementById("produits-container");
+            container.innerHTML = "";
+            produits.filter(p => filtre === "tous" || p.categorie === filtre).forEach(produit => {
+                container.innerHTML += `
+                <div class="produit-item">
+                    <img src="${produit.image}" alt="${produit.titre}">
+                    <h3>${produit.titre}</h3>
+                    <p class="prix">${produit.prix} MAD</p>
+                    <button onclick="ajouterProduit(${produit.id})">Ajouter au panier</button>
+                </div>`;
+            });
+        }
+
+        function afficherPanier() {
+            let panierContainer = document.getElementById("panier-container");
+            panierContainer.innerHTML = "";
+            if (panier.length === 0) {
+                panierContainer.innerHTML = "<p>Votre panier est vide</p>";
+            } else {
+                let table = document.createElement("table");
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Produit</th>
+                            <th>Prix</th>
+                            <th>Quantité</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="panier-body"></tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3"><strong>Total</strong></td>
+                            <td colspan="2"><strong>${panier.reduce((total, p) => total + (p.prix * p.qtc), 0)} MAD</strong></td>
+                        </tr>
+                    </tfoot>
+                `;
+                panierContainer.appendChild(table);
+                let panierBody = document.getElementById("panier-body");
+                panier.forEach(item => {
+                    let tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${item.titre}</td>
+                        <td>${item.prix} MAD</td>
+                        <td>
+                            <button onclick="mettreAJourQuantite(${item.id}, ${item.qtc - 1})">-</button>
+                            <span>${item.qtc}</span>
+                            <button onclick="mettreAJourQuantite(${item.id}, ${item.qtc + 1})">+</button>
+                        </td>
+                        <td>${item.prix * item.qtc} MAD</td>
+                        <td><button onclick="supprimerProduit(${item.id})">Supprimer</button></td>
+                    `;
+                    panierBody.appendChild(tr);
+                });
+            }
+        }
+
+        function mettreAJourQuantite(id, quantite) {
+            let item = panier.find(p => p.id === id);
+            if (item) {
+                if (quantite <= 0) {
+                    panier = panier.filter(p => p.id !== id);
+                } else {
+                    item.qtc = quantite;
+                }
+                mettreAJourPanier();
+            }
+        }
+
+        function supprimerProduit(id) {
+            panier = panier.filter(p => p.id !== id);
+            mettreAJourPanier();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            afficherProduits();
+            mettreAJourPanier();
+
+            document.querySelectorAll(".btn-categorie").forEach(btn => {
+                btn.addEventListener("click", () => afficherProduits(btn.dataset.categorie));
+            });
+
+            document.getElementById("search-input").addEventListener("input", function() {
+                afficherProduits();
+            });
+
+            document.getElementById("cart-button").addEventListener("click", () => {
+                document.getElementById("panier").classList.toggle("visible");
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Employés</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Gestion des Employés</h2>
+    <form id="employeeForm">
+        <input type="text" id="matricule" placeholder="Matricule" required>
+        <input type="text" id="nom" placeholder="Nom" required>
+        <input type="text" id="prenom" placeholder="Prénom" required>
+        <input type="number" id="echelle" placeholder="Échelle" required>
+        <input type="number" id="echelon" placeholder="Échelon" required>
+        <button type="submit">Ajouter</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Matricule</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Échelle</th>
+                <th>Échelon</th>
+            </tr>
+        </thead>
+        <tbody id="employeeTableBody">
+        </tbody>
+    </table>
+
+    <script>
+        document.getElementById("employeeForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let matricule = document.getElementById("matricule").value;
+            let nom = document.getElementById("nom").value;
+            let prenom = document.getElementById("prenom").value;
+            let echelle = document.getElementById("echelle").value;
+            let echelon = document.getElementById("echelon").value;
+
+            let tableBody = document.getElementById("employeeTableBody");
+            let row = tableBody.insertRow();
+            row.insertCell(0).innerText = matricule;
+            row.insertCell(1).innerText = nom;
+            row.insertCell(2).innerText = prenom;
+            row.insertCell(3).innerText = echelle;
+            row.insertCell(4).innerText = echelon;
+
+            document.getElementById("employeeForm").reset();
+        });
+    </script>
+</body>
+
+</html>

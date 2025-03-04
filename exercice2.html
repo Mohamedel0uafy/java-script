@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercice 2</title>
+    <style>
+        p {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="paragraph-container"></div>
+
+    <script>
+        function generateParagraphs(num) {
+            const container = document.getElementById('paragraph-container');
+            for (let i = 1; i <= num; i++) {
+                const p = document.createElement('p');
+                p.textContent = `This is paragraph ${i}`;
+                p.addEventListener('click', function() {
+                    container.removeChild(p);
+                });
+                container.appendChild(p);
+            }
+        }
+
+        generateParagraphs(5);
+    </script>
+</body>
+
+</html>

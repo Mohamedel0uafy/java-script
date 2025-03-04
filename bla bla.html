@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        let paracount = 0;
+
+        function addPar() {
+            paracount++;
+            const cont = document.getElementById('cont');
+            const newpar = document.createElement('p');
+            newpar.textContent = `Paragraphe numéro ${paracount}`;
+            cont.appendChild(newpar);
+        }
+    </script>
+    <div id="cont"></div>
+    <button onclick="addPar()">ajouter paragraph</button>
+
+
+    <script>
+        function genrate(num) {
+            const cont = document.getElementById('cont');
+            for (let i = 1; i <= num; i++) {
+                const p = document.createElement('p');
+                p.textContent = `This is paragraph ${i}`;
+                p.addEventListener('click', function() {
+                    cont.removeChild(p);
+                });
+
+
+                cont.appendChild(p);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
