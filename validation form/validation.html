@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container mt-5 shadow p-3 mb-5 bg-white rounded">
+        <form id="form">
+            <input type="text" id="name" placeholder="name" class="form-control mb-2"><br>
+            <input type="email" id="email" placeholder="email" class="form-control mb-2"><br>
+            <label class="label-control">Genre :</label>
+            <input type="radio" name="gender" value="Homme"> Homme
+            <input type="radio" name="gender" value="Femme"> Femme
+            <span class="error" id="genderError"></span><br><br>
+            <label>Pays :</label>
+            <select id="country" class="form-control mb-2">
+                <option value="" disabled>-- Sélectionner --</option>
+                <option value="France">France</option>
+                <option value="Canada">Canada</option>
+                <option value="USA">USA</option>
+            </select>
+            <span class="error" id="countryError"></span><br><br>
+            <input type="number" id="age" placeholder="age" class="form-control mb-2"><br>
+            <input type="date" id="dob" placeholder="dob" class="form-control mb-2"><br>
+            <input type="password" id="password" placeholder="password" class="form-control mb-2"><br>
+            <input type="password" id="password2" placeholder="password2" class="form-control mb-2"><br>
+            <input type="file" id="image" class="form-control"><br>
+            <input type="button" id="btn" value="submit" class="btn btn-primary mt-2">
+        </form>
+        <div id="result">
+            <h3>Données du formulaire :</h3>
+            <p><strong>Nom :</strong> <span id="resname"></span></p>
+            <p><strong>Email :</strong> <span id="resemail"></span></p>
+            <p><strong>Mot de passe :</strong> <span id="respassword"></span></p>
+            <p><strong>Âge :</strong> <span id="resage"></span></p>
+            <p><strong>Date de naissance :</strong> <span id="resdob"></span></p>
+            <p><strong>Genre :</strong> <span id="resgender"></span></p>
+            <p><strong>Pays :</strong> <span id="rescountry"></span></p>
+            <p><strong>Photo de profil :</strong> <img id="resprofilePic" src="" alt="Aucune image" width="100"></p>
+        </div>
+    </div>
+    <script>
+        let name = document.getElementById('name');
+        let email = document.getElementById('email');
+        let age = document.getElementById('age');
+        let dob = document.getElementById('dob');
+        let password = document.getElementById('password');
+        let password2 = document.getElementById('password2');
+        let image = document.getElementById('image');
+        let btn = document.getElementById('btn');
+        //
+
+        let resname = document.getElementById('resname');
+        let resemail = document.getElementById('resemail');
+        let respassword = document.getElementById('respassword');
+        let resage = document.getElementById('resage');
+        let resdob = document.getElementById('resdob');
+        let resgender = document.getElementById('resgender');
+        let rescountry = document.getElementById('rescountry');
+        let resprofilePic = document.getElementById('resprofilePic');
+        //
+
+
+        let emailpattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        let passwordpattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+
+        btn.addEventListener('click', function() {
+            let valid = true;
+
+            if (name.value === "") {
+                name.style.borderColor = "red";
+                valid = false;
+            } else {
+                name.style.borderColor = "green";
+            }
+            if (!emailpattern.test(email.value)) {
+                email.style.borderColor = "red";
+                valid = false;
+            } else {
+                email.style.borderColor = "green";
+            }
+            if (password.value === "" || password2.value === "" || password.value !== password2.value) {
+                password.style.borderColor = "red";
+                password2.style.borderColor = "red";
+                valid = false;
+            } else {
+                password.style.borderColor = "green";
+                password2.style.borderColor = "green";
+
+            }
+            if (age.value === "" || age.value < 18) {
+                age.style.borderColor = "red";
+                valid = false;
+            } else {
+                age.style.borderColor = "green";
+            }
+            if (dob.value === "") {
+                dob.style.borderColor = "red";
+                valid = false;
+            } else {
+                dob.style.borderColor = "green";
+            }
+            if (document.querySelector('input[name="gender"]:checked') === null) {
+                document.getElementById('genderError').textContent = "Veuillez sélectionner un genre.";
+                valid = false;
+            } else {
+                document.getElementById('genderError').textContent = "";
+            }
+
+            if (document.getElementById('country').value === "") {
+                document.getElementById('countryError').textContent = "Veuillez sélectionner un pays.";
+                valid = false;
+            } else {
+                document.getElementById('countryError').textContent = "";
+            }
+
+            if (valid) {
+                resname.textContent = name.value;
+                resemail.textContent = email.value;
+                respassword.textContent = password.value;
+                resage.textContent = age.value;
+                resdob.textContent = dob.value;
+                resgender.textContent = document.querySelector('input[name="gender"]:checked').value;
+                rescountry.textContent = document.getElementById('country').value;
+
+                if (image.files && image.files[0]) {
+                    let reader = new FileReader();
+                    reader.onload = function(e) {
+                        resprofilePic.src = e.target.result;
+                    };
+                    reader.readAsDataURL(image.files[0]);
+                } else {
+                    resprofilePic.src = "";
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

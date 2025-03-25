@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Cruds</h1>
+    <h3>Creat read update delete search</h3>
+    <input type="text" id="code" placeholder="title" class="form-control mb-2"><br>
+    <div class="d-flex gap-2 mb-2">
+        <input type="number" onkeyup="gettotal" id="price" placeholder="price" class="form-control w-25 ml-1">
+        <input type="number" onkeyup="gettotal" id="taxes" placeholder="taxes" class="form-control w-25 ml-1">
+        <input type="number" onkeyup="gettotal" id="ads" placeholder="ads" class="form-control w-25 ml-1">
+        <input type="number" onkeyup="gettotal" id="discount" placeholder="discount" class="form-control w-25 ml-1">
+        <button id="res" class="btn btn-warning w-25 ml-1">total</button>
+    </div>
+    <input type="number" id="count" placeholder="count" class="form-control mt-2">
+    <input type="number" id="cat" placeholder="category" class="form-control mt-2">
+    <input type="button" id="submit" value="submit" class="btn btn-primary mt-2">
+    <input type="text" id="search" placeholder="search" class="form-control mt-2">
+    <input type="button" id="s-title" value="s-title" class="btn btn-success mt-2">
+    <input type="button" id="s-cat" value="s-cat" class="btn btn-success mt-2">
+    <input type="button" id="delete" value="delete" class="btn btn-danger mt-2">
+
+    <table>
+        <tr>
+            <tr>ID</tr>
+            <th>TITLE</th>
+            <th>PRICE</th>
+            <th>PRICE</th>
+            <th>ADS</th>
+            <th>DISCOUNT</th>
+            <th>TOTAL</th>
+            <th>CATEGORY</th>
+            <th>UPDATE</th>
+            <th>DELETE</th>
+
+
+        </tr>
+        <tbody>
+
+        </tbody>
+    </table>
+    <script>
+        let code = document.getElementById('code');
+        let price = document.getElementById('price');
+        let taxes = document.getElementById('taxes');
+        let ads = document.getElementById('ads');
+        let discount = document.getElementById('discount');
+        let res = document.getElementById('res');
+        let count = document.getElementById('count');
+        let cat = document.getElementById('cat');
+        let submit = document.getElementById('submit');
+        let search = document.getElementById('search');
+        let sTitle = document.getElementById('s-title');
+        let sCat = document.getElementById('s-cat');
+        let del = document.getElementById('delete');
+        let tbody = document.querySelector('tbody');
+
+        res.onclick = function(gettotal) {
+            let total = price.value * count.value + taxes.value * count.value + ads.value * count.value - discount.value * count.value;
+            console.log(total);
+        }
+    </script>
+
+
+
+
+</body>
+
+</html>

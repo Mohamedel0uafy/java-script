@@ -1,44 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Calcul de l'âge</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body>
-    <script>
-        let paracount = 0;
+<body class="d-flex justify-content-center align-items-center vh-100 bg-light">
+    <div class="card shadow p-4" style="width: 350px;">
+        <h2 class="text-center mb-3">Calculateur d'âge</h2>
+        <label for="dateNaissance" class="form-label">Entrez votre date de naissance :</label>
+        <input type="date" id="dateNaissance" class="form-control mb-3">
+        <button onclick="afficherAge()" class="btn btn-primary w-100">Calculer</button>
+        <h4 class="text-center mt-3 text-success" id="resultat"></h4>
+    </div>
 
-        function addPar() {
-            paracount++;
-            const cont = document.getElementById('cont');
-            const newpar = document.createElement('p');
-            newpar.textContent = `Paragraphe numéro ${paracount}`;
-            cont.appendChild(newpar);
+    <script>
+        function calculerAge(dateNaissance) {
+            let aujourdHui = new Date();
+            let naissance = new Date(dateNaissance);
+
+            if (naissance > aujourdHui) {
+                return {
+                    erreur: "Veuillez entrer une date valide."
+                };
+            }
+
+            let ageAnnees = aujourdHui.getFullYear() - naissance.getFullYear();
+            let ageMois = aujourdHui.getMonth() - naissance.getMonth();
+            let ageJours = aujourdHui.getDate() - naissance.getDate();
+
+            if (ageMois < 0 || (ageMois === 0 && ageJours < 0)) {
+                ageAnnees--;
+                ageMois += 12;
+            }
+
+            if (ageJours < 0) {
+                let dernierMois = new Date(aujourdHui.getFullYear(), aujourdHui.getMonth(), 0);
+                ageJours += dernierMois.getDate();
+                ageMois--;
+            }
+
+            return {
+                jours: ageJours,
+                mois: ageMois,
+                annees: ageAnnees
+            };
         }
-    </script>
-    <div id="cont"></div>
-    <button onclick="addPar()">ajouter paragraph</button>
 
+        function afficherAge() {
+            let dateNaissance = document.getElementById("dateNaissance").value;
+            let resultat = document.getElementById("resultat");
 
-    <script>
-        function genrate(num) {
-            const cont = document.getElementById('cont');
-            for (let i = 1; i <= num; i++) {
-                const p = document.createElement('p');
-                p.textContent = `This is paragraph ${i}`;
-                p.addEventListener('click', function() {
-                    cont.removeChild(p);
-                });
+            if (dateNaissance) {
+                let age = calculerAge(dateNaissance);
 
-
-                cont.appendChild(p);
+                if (age.erreur) {
+                    resultat.textContent = age.erreur;
+                    resultat.classList.replace("text-success", "text-danger");
+                } else {
+                    resultat.textContent = `Vous avez ${age.jours} jours, ${age.mois} mois et ${age.annees} ans.`;
+                    resultat.classList.replace("text-danger", "text-success");
+                }
+            } else {
+                resultat.textContent = "Veuillez entrer une date valide.";
+                resultat.classList.replace("text-success", "text-danger");
             }
         }
     </script>
-
 </body>
 
 </html>

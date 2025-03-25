@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Continents</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="container mt-5">
+    <h1>Gestion des Continents</h1>
+    <button id="btnAjouter" class="btn btn-primary mb-3">Ajouter Nouveau</button>
+    <button id="btnsubmit" class="btn btn-primary mb-3">submit</button>
+    <table class="table table-bordered" id="table">
+        <thead class="thead-light">
+            <tr>
+                <th><input type="checkbox" id="selectAll"></th>
+                <th>Code</th>
+                <th>Nom</th>
+                <th>Pays</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="continentsBody"></tbody>
+    </table>
+    <button id="btnDeleteMany" class="btn btn-danger">Supprimer Sélectionnés</button>
+    <form id="form" style="display:none;">
+        <input type="hidden" id="continentId">
+        <div class="form-group">
+            <label for="code">Code:</label>
+            <input type="text" id="code" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="nom">Nom:</label>
+            <input type="text" id="nom" class="form-control" required>
+        </div>
+        <div class="form-group form-check">
+            <label for="pays">Pays:</label>
+            <select multiple id="pays" class="form-control">
+                <option value="Maroc">Maroc</option>
+                <option value="Tunisie">Tunisie</option>
+                <option value="Égypte">Égypte</option>
+                <option value="France">France</option>
+                <option value="Espagne">Espagne</option>
+                <option value="Suisse">Suisse</option>
+                <option value="US">US</option>
+                <option value="Canada">Canada</option>
+                <option value="Mexique">Mexique</option>
+                <option value="Japon">Japon</option>
+                <option value="Chine">Chine</option>
+                <option value="Malaisie">Malaisie</option>
+                <option value="Australie">Australie</option>
+                <option value="Nouvelle-Guinée">Nouvelle-Guinée</option>
+                <option value="Nouvelle-Zélande">Nouvelle-Zélande</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+    </form>
+
+    <script>
+        let continents = [];
+        const continentsBody = document.getElementById('continentsBody');
+        const form = document.getElementById('form');
+        const codeInput = document.getElementById('code');
+        const nomInput = document.getElementById('nom');
+        const paysSelect = document.getElementById('pays');
+        const continentIdInput = document.getElementById('continentId');
+
+        fetch('jason_pays.json')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(element => {
+                    continents.push(element);
+                    let li = '';
+                    for (let i in element.pays) {
+                        li += `<li>${element.pays[i]}</li>`;
+                    }
+                    continentsBody.innerHTML += `
+                    <tr>
+                        <td><input type="checkbox" class="continentSelect" data-id="${element.id}"></td>
+                        <td>${element.code}</td>
+                        <td>${element.nom}</td>
+                        <td>${li}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm btnEdit" data-id="${element.id}">Modifier</button>
+                            <button class="btn btn-danger btn-sm btnDelete" data-id="${element.id}">Supprimer</button>
+                        </td>
+                    </tr>`;
+                });
+
+                attachEventListeners();
+            });
+
+        document.getElementById('btnAjouter').addEventListener('click', function() {
+            form.reset();
+            document.getElementById('table').style.display = 'none';
+            form.style.display = 'block';
+        });
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const continent = {
+                id: continentIdInput.value,
+                code: codeInput.value,
+                nom: nomInput.value,
+                pays: Array.from(paysSelect.selectedOptions).map(option => option.value)
+            };
+
+            if (continentIdInput.value) {
+                const index = contimnents.findIndex(c => c.id == continent.id);
+                continents[index] = continent;
+            } else {
+                continents.push(continent);
+            }
+
+            updateTable();
+            form.style.display = 'none';
+            document.getElementById('table').style.display = 'block';
+        });
+
+        function updateTable() {
+            continentsBody.innerHTML = '';
+            continents.forEach(element => {
+                let li = '';
+                for (let i in element.pays) {
+                    li += `<li>${element.pays[i]}</li>`;
+                }
+                continentsBody.innerHTML += `
+                    <tr>
+                        <td><input type="checkbox" class="continentSelect" data-id="${element.id}"></td>
+                        <td>${element.code}</td>
+                        <td>${element.nom}</td>
+                        <td>${li}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm btnEdit" data-id="${element.id}">Modifier</button>
+                            <button class="btn btn-danger btn-sm btnDelete" data-id="${element.id}">Supprimer</button>
+                        </td>
+                    </tr>`;
+            });
+
+            attachEventListeners();
+        }
+
+        function attachEventListeners() {
+            document.querySelectorAll('.btnEdit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const continentToEdit = continents.find(continent => continent.id == id);
+                    continentIdInput.value = continentToEdit.id;
+                    codeInput.value = continentToEdit.code;
+                    nomInput.value = continentToEdit.nom;
+
+                    for (let option of paysSelect.options) {
+                        option.selected = continentToEdit.pays.includes(option.value);
+                    }
+
+                    document.getElementById('table').style.display = 'none';
+                    form.style.display = 'block';
+                });
+            });
+
+            document.querySelectorAll('.btnDelete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    continents = continents.filter(continent => continent.id != id);
+                    this.parentElement.parentElement.remove();
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

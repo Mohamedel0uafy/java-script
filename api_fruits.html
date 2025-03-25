@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit CRUD App</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th,
+        td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        img {
+            width: 50px;
+            height: 50px;
+        }
+        
+        button {
+            cursor: pointer;
+            margin: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Fruit Management</h2>
+    <button onclick="openAddModal()">+ Add Fruit</button>
+    <button onclick="deleteSelected()">Delete Selected</button>
+    <table>
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="checkAll" onclick="toggleAll(this)"></th>
+                <th>Code</th>
+                <th>Fruit Name</th>
+                <th>Price</th>
+                <th>Photo</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="fruitTable"></tbody>
+    </table>
+
+    <script>
+        let fruits = [{
+            code: 'F1',
+            name: 'Banane',
+            price: '10.00DH',
+            photo: 'https://via.placeholder.com/50'
+        }, {
+            code: 'F2',
+            name: 'Mangue',
+            price: '30.00DH',
+            photo: 'https://via.placeholder.com/50'
+        }, {
+            code: 'F3',
+            name: 'Kiwi',
+            price: '15.00DH',
+            photo: 'https://via.placeholder.com/50'
+        }];
+
+        function loadFruits() {
+            let table = document.getElementById("fruitTable");
+            table.innerHTML = "";
+            fruits.forEach((fruit, index) => {
+                let row = `<tr>
+                    <td><input type="checkbox" class="checkItem" value="${index}"></td>
+                    <td>${fruit.code}</td>
+                    <td>${fruit.name}</td>
+                    <td>${fruit.price}</td>
+                    <td><img src="${fruit.photo}" alt="${fruit.name}"></td>
+                    <td>
+                        <button onclick="editFruit(${index})">✏️ Edit</button>
+                        <button onclick="deleteFruit(${index})">🗑️ Delete</button>
+                    </td>
+                </tr>`;
+                table.innerHTML += row;
+            });
+        }
+
+        function toggleAll(source) {
+            document.querySelectorAll(".checkItem").forEach(checkbox => checkbox.checked = source.checked);
+        }
+
+        function deleteSelected() {
+            let selected = [...document.querySelectorAll(".checkItem:checked")].map(c => parseInt(c.value)).reverse();
+            selected.forEach(index => fruits.splice(index, 1));
+            loadFruits();
+        }
+
+        function deleteFruit(index) {
+            fruits.splice(index, 1);
+            loadFruits();
+        }
+
+        function editFruit(index) {
+            let fruit = fruits[index];
+            Swal.fire({
+                title: 'Edit Fruit',
+                html: `<input id='name' class='swal2-input' value='${fruit.name}'>` +
+                    `<input id='price' class='swal2-input' value='${fruit.price}'>`,
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                preConfirm: () => {
+                    fruit.name = document.getElementById('name').value;
+                    fruit.price = document.getElementById('price').value;
+                    loadFruits();
+                }
+            });
+        }
+
+        function openAddModal() {
+            Swal.fire({
+                title: 'Add New Fruit',
+                html: `<input id='newCode' class='swal2-input' placeholder='Code'>` +
+                    `<input id='newName' class='swal2-input' placeholder='Name'>` +
+                    `<input id='newPrice' class='swal2-input' placeholder='Price'>`,
+                showCancelButton: true,
+                confirmButtonText: 'Add',
+                preConfirm: () => {
+                    let newFruit = {
+                        code: document.getElementById('newCode').value,
+                        name: document.getElementById('newName').value,
+                        price: document.getElementById('newPrice').value,
+                        photo: 'https://via.placeholder.com/50'
+                    };
+                    fruits.push(newFruit);
+                    loadFruits();
+                }
+            });
+        }
+
+        loadFruits();
+    </script>
+</body>
+
+</html>

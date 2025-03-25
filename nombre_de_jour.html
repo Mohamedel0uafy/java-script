@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>calcul du nombre de jours entre 2 dates</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="container text-center">
+        <div class="card p-4 shadow">
+            <label for="date1" class="form-label">Date 1</label>
+            <input type="date" id="date1" class="form-control mb-2" placeholder="type a date">
+            <label for="date2" class="form-label">Date 2</label>
+            <input type="date" id="date2" class="form-control mb-2" placeholder="type a date">
+            <button id="calculate" class="btn btn-primary mt-3" onclick="calculate()">Calculer</button>
+            <h3 id="result" class="mt-3 "></h3>
+        </div>
+    </div>
+    <script>
+        function calculate() {
+            let date1 = new Date(document.getElementById('date1').value);
+            let date2 = new Date(document.getElementById('date2').value);
+            let result = 0;
+
+            if (date1 > date2) {
+                alert('date1 doit etre inferieur a date2');
+                return;
+            } else {
+                let diff = date2.getTime() - date1.getTime();
+                result = diff / (1000 * 3600 * 24);
+            }
+            document.getElementById('result').textContent = "Result is " + result;
+        }
+    </script>
+</body>
+
+</html>

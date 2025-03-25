@@ -6,9 +6,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    .label {
+        display: block;
+        text-align: center;
+        font-size: 50px;
+    }
+    
+    .button {
+        text-align: center;
+    }
+    
+    .bton {
+        padding: 5px 10px;
+        font-size: 15px;
+        color: white;
+        background-color: aquamarine;
+    }
+</style>
 
 <body>
 
+
+
+    <label id="countlabel" class="label">0</label><br>
+    <div class="button">
+        <button id="decrase" class="bton">-</button>
+        <button id="encrase" class="bton">+</button>
+        <button id="rest" class="bton">reset</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const decrase = document.getElementById('decrase');
+            const reset = document.getElementById('reset');
+            const encrase = document.getElementById('encrase');
+            const countlabel = document.getElementById('countlabel');
+            let x = 0;
+
+            encrase.onclick = function() {
+                x++;
+                countlabel.textContent = x;
+            }
+
+            decrase.onclick = function() {
+                x--;
+                countlabel.textContent = x;
+            }
+
+            reset.onclick = function() {
+                x = 0;
+                countlabel.textContent = x;
+            }
+
+        });
+    </script>
 </body>
+
 
 </html>

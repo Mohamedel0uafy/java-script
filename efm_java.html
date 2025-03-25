@@ -178,7 +178,6 @@
         function mettreAJourPanier() {
             document.getElementById("badge-count").textContent = panier.reduce((total, p) => total + p.qtc, 0);
             localStorage.setItem("panier", JSON.stringify(panier));
-            afficherPanier();
         }
 
         function ajouterProduit(id) {
@@ -203,68 +202,6 @@
                     <button onclick="ajouterProduit(${produit.id})">Ajouter au panier</button>
                 </div>`;
             });
-        }
-
-        function afficherPanier() {
-            let panierContainer = document.getElementById("panier-container");
-            panierContainer.innerHTML = "";
-            if (panier.length === 0) {
-                panierContainer.innerHTML = "<p>Votre panier est vide</p>";
-            } else {
-                let table = document.createElement("table");
-                table.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>Produit</th>
-                            <th>Prix</th>
-                            <th>Quantité</th>
-                            <th>Total</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="panier-body"></tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3"><strong>Total</strong></td>
-                            <td colspan="2"><strong>${panier.reduce((total, p) => total + (p.prix * p.qtc), 0)} MAD</strong></td>
-                        </tr>
-                    </tfoot>
-                `;
-                panierContainer.appendChild(table);
-                let panierBody = document.getElementById("panier-body");
-                panier.forEach(item => {
-                    let tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td>${item.titre}</td>
-                        <td>${item.prix} MAD</td>
-                        <td>
-                            <button onclick="mettreAJourQuantite(${item.id}, ${item.qtc - 1})">-</button>
-                            <span>${item.qtc}</span>
-                            <button onclick="mettreAJourQuantite(${item.id}, ${item.qtc + 1})">+</button>
-                        </td>
-                        <td>${item.prix * item.qtc} MAD</td>
-                        <td><button onclick="supprimerProduit(${item.id})">Supprimer</button></td>
-                    `;
-                    panierBody.appendChild(tr);
-                });
-            }
-        }
-
-        function mettreAJourQuantite(id, quantite) {
-            let item = panier.find(p => p.id === id);
-            if (item) {
-                if (quantite <= 0) {
-                    panier = panier.filter(p => p.id !== id);
-                } else {
-                    item.qtc = quantite;
-                }
-                mettreAJourPanier();
-            }
-        }
-
-        function supprimerProduit(id) {
-            panier = panier.filter(p => p.id !== id);
-            mettreAJourPanier();
         }
 
         document.addEventListener("DOMContentLoaded", () => {

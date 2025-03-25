@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="checkbox" id="sub"> Sub <br>
+    <input type="radio" id="visa" name="1"> Visa <br>
+    <input type="radio" id="mastercard" name="1"> mastercard <br>
+    <input type="radio" id="paypal" name="1"> paypal <br>
+    <button id="submit">submit</button>
+    <script>
+        const sub = document.getElementById('sub');
+        const visa = document.getElementById('visa');
+        const mastercard = document.getElementById('mastercard');
+        const paypal = document.getElementById('paypal');
+        const submit = document.getElementById('submit');
+        submit.onclick = function() {
+            if (sub.checked) {
+                alert('sub');
+            } else if (visa.checked) {
+                alert('visa');
+            } else if (mastercard.checked) {
+                alert('mastercard');
+            } else if (paypal.checked) {
+                alert('paypal');
+            }
+        }
+    </script>
+
+</body>
+
+</html>

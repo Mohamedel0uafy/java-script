@@ -1,0 +1,26 @@
+[{
+        "code": "ER",
+        "nom": "Europe",
+        "pays": ["France", "Espagne", "Suisse"]
+    },
+    {
+        "code": "AM",
+        "nom": "Amérique",
+        "pays": ["Canada", "Etats-Unis", "Mexique"]
+    },
+    {
+        "code": "AS",
+        "nom": "Asie",
+        "pays": ["Chine", "Japon", "Inde"]
+    },
+    {
+        "code": "AF",
+        "nom": "Afrique",
+        "pays": ["Maroc", "Egypt", "Tunisie"]
+    },
+    {
+        "code": "Aus",
+        "nom": "Australie",
+        "pays": ["Australie", "Nouvelle-Guinee", "New Zealand"]
+    }
+]

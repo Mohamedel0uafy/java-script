@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulateur de Dose Médicamenteuse</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body class="container mt-5">
+
+    <h2 class="mb-4">Simulateur de Dose Médicamenteuse</h2>
+
+    <form id="doseForm">
+        <div class="mb-3">
+            <label for="medicament" class="form-label">Nom du médicament</label>
+            <input type="text" class="form-control" id="medicament" required>
+        </div>
+        <div class="mb-3">
+            <label for="poids" class="form-label">Poids du patient (kg)</label>
+            <input type="number" class="form-control" id="poids" required>
+        </div>
+        <div class="mb-3">
+            <label for="dose" class="form-label">Dose recommandée (mg/kg)</label>
+            <input type="number" class="form-control" id="dose" required>
+        </div>
+        <div class="mb-3">
+            <label for="concentration" class="form-label">Concentration du médicament (mg/mL)</label>
+            <input type="number" class="form-control" id="concentration" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Calculer</button>
+    </form>
+
+    <div class="mt-4 alert alert-info d-none" id="result"></div>
+
+    <script>
+        $(document).ready(function() {
+            $("#doseForm").submit(function(event) {
+                event.preventDefault();
+
+                let poids = parseFloat($("#poids").val());
+                let dose = parseFloat($("#dose").val());
+                let concentration = parseFloat($("#concentration").val());
+
+                if (isNaN(poids) || poids <= 0 || isNaN(dose) || dose <= 0 || isNaN(concentration) || concentration <= 0) {
+                    alert("Veuillez entrer des valeurs valides !");
+                    return;
+                }
+
+                let doseTotale = poids * dose;
+                let volume = doseTotale / concentration;
+
+                $("#result").removeClass("d-none").html(
+                    `<strong>Dose totale :</strong> ${doseTotale.toFixed(2)} mg<br>
+                    <strong>Volume à injecter :</strong> ${volume.toFixed(2)} mL`
+                );
+            });
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcul valeur énergétique d'un repas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="container mt-4">
+        <h1>Calcul valeur énergétique d'un repas</h1>
+        <div>
+            <h3>Choisir les aliments :</h3>
+            <form id="mealForm">
+                <div><input type="checkbox" class="foodCheck" id="painCheck"> Pain <input type="number" class="foodQty" id="painQty" value="100" disabled> g</div>
+                <div><input type="checkbox" class="foodCheck" id="viandeCheck"> Viande <input type="number" class="foodQty" id="viandeQty" value="100" disabled> g</div>
+                <div><input type="checkbox" class="foodCheck" id="legumesCheck"> Légumes <input type="number" class="foodQty" id="legumesQty" value="100" disabled> g</div>
+                <div><input type="checkbox" class="foodCheck" id="bananeCheck"> Banane <input type="number" class="foodQty" id="bananeQty" value="1" disabled> fruits</div>
+                <div><input type="checkbox" class="foodCheck" id="pommeCheck"> Pomme <input type="number" class="foodQty" id="pommeQty" value="1" disabled> fruits</div>
+                <div><input type="checkbox" class="foodCheck" id="yaourtCheck"> Yaourt <input type="number" class="foodQty" id="yaourtQty" value="1" disabled> unités</div>
+                <button type="button" id="calculButton">Calculer</button>
+            </form>
+
+            <div id="resultSection">
+                La valeur énergétique de votre repas est : <span id="totalCalories">0</span> kcal
+            </div>
+
+            <div id="errorMsg" style="display: none;">
+                Veuillez sélectionner au moins une case à cocher.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('.foodCheck').change(function() {
+                let inputId = $(this).attr('id').replace('Check', 'Qty');
+                $('#' + inputId).prop('disabled', !$(this).prop('checked'));
+            });
+
+            $('#calculButton').click(function() {
+                if ($('.foodCheck:checked').length === 0) {
+                    $('#errorMsg').show();
+                    return;
+                }
+                $('#errorMsg').hide();
+
+                let totalCalories = 0;
+                let caloriesData = {
+                    'painCheck': 275,
+                    'viandeCheck': 180,
+                    'legumesCheck': 25,
+                    'bananeCheck': 116,
+                    'pommeCheck': 80,
+                    'yaourtCheck': 140
+                };
+
+                $('.foodCheck:checked').each(function() {
+                    let checkId = $(this).attr('id');
+                    let qtyId = checkId.replace('Check', 'Qty');
+                    let qty = parseInt($('#' + qtyId).val());
+                    totalCalories += (qty * caloriesData[checkId]) / (checkId === 'bananeCheck' || checkId === 'pommeCheck' || checkId === 'yaourtCheck' ? 1 : 100);
+                });
+
+                $('#totalCalories').text(Math.round(totalCalories));
+            });
+        });
+    </script>
+</body>
+
+</html>

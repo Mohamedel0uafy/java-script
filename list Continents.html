@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Continents</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        button {
+            margin: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 50%;
+        }
+        
+        .close {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Gestion des Continents</h1>
+    <button id="btnAjouter">Ajouter Nouveau</button>
+    <table>
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="selectAll"></th>
+                <th>Code</th>
+                <th>Nom</th>
+                <th>Pays</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="continentsBody"></tbody>
+    </table>
+    <button id="btnDeleteMany">Supprimer Sélectionnés</button>
+
+    <div id="continentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Ajouter un Continent</h2>
+            <form id="continentForm">
+                <input type="hidden" id="continentId">
+                <label>Code:</label>
+                <input type="text" id="code" required>
+                <label>Nom:</label>
+                <input type="text" id="nom" required>
+                <label>Pays:</label>
+                <select multiple id="pays">
+                    <option value="Maroc">Maroc</option>
+                    <option value="Tunisie">Tunisie</option>
+                    <option value="Égypte">Égypte</option>
+                    <option value="France">France</option>
+                    <option value="Espagne">Espagne</option>
+                    <option value="Suisse">Suisse</option>
+                    <option value="US">US</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Mexique">Mexique</option>
+                    <option value="Japon">Japon</option>
+                    <option value="Chine">Chine</option>
+                    <option value="Malaisie">Malaisie</option>
+                    <option value="Australie">Australie</option>
+                    <option value="Nouvelle-Guinée">Nouvelle-Guinée</option>
+                    <option value="Nouvelle-Zélande">Nouvelle-Zélande</option>
+                </select>
+                <button type="submit">Enregistrer</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/continents';
+        const modal = document.getElementById('continentModal');
+        const form = document.getElementById('continentForm');
+
+        document.getElementById('btnAjouter').onclick = () => {
+            form.reset();
+            document.getElementById('modalTitle').textContent = 'Ajouter un Continent';
+            modal.style.display = 'block';
+        };
+        document.querySelector('.close').onclick = () => modal.style.display = 'none';
+        window.onclick = (event) => {
+            if (event.target === modal) modal.style.display = 'none';
+        };
+
+        async function fetchContinents() {
+            const response = await fetch(API_URL);
+            const continents = await response.json();
+            const tbody = document.getElementById('continentsBody');
+            tbody.innerHTML = '';
+            continents.forEach(({
+                id,
+                code,
+                nom,
+                pays
+            }) => {
+                tbody.innerHTML += `
+                <tr data-id="${id}">
+                    <td><input type="checkbox" class="continent-checkbox"></td>
+                    <td>${code}</td>
+                    <td>${nom}</td>
+                    <td>${pays.join(', ')}</td>
+                    <td>
+                        <button onclick='window.editContinent(${JSON.stringify({ id, code, nom, pays })})'>Edit</button>
+                        <button onclick='window.deleteContinent(${id})'>Delete</button>
+                    </td>
+                </tr>`;
+            });
+        }
+
+        async function saveContinent(event) {
+            event.preventDefault();
+            const id = document.getElementById('continentId').value;
+            const continent = {
+                code: document.getElementById('code').value,
+                nom: document.getElementById('nom').value,
+                pays: Array.from(document.getElementById('pays').selectedOptions).map(o => o.value)
+            };
+            console.log('Saving continent:', continent); // Debugging log
+            const response = await fetch(`${API_URL}${id ? `/${id}` : ''}`, {
+            method: id ? 'PUT' : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(continent)
+        });
+        console.log('Response:', response); 
+        if (response.ok) {
+            modal.style.display = 'none';
+            fetchContinents();
+        } else {
+            console.error('Failed to save continent:', response.statusText);
+        }
+    }
+
+    window.deleteContinent = async function(id) {
+        if (confirm('Supprimer ce continent ?')) {
+            const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            if (response.ok) {
+                fetchContinents();
+            } else {
+                console.error('Failed to delete continent:', response.statusText);
+            }
+        }
+    }
+
+    window.editContinent = function(continent) {
+        document.getElementById('continentId').value = continent.id;
+        document.getElementById('code').value = continent.code;
+        document.getElementById('nom').value = continent.nom;
+        const paysSelect = document.getElementById('pays');
+        Array.from(paysSelect.options).forEach(option => {
+            option.selected = continent.pays.includes(option.value);
+        });
+        modal.style.display = 'block';
+    }
+
+    form.onsubmit = saveContinent;
+
+    document.getElementById('selectAll').onclick = (event) => {
+        const checkboxes = document.querySelectorAll('.continent-checkbox');
+        checkboxes.forEach(checkbox => checkbox.checked = event.target.checked);
+    };
+
+    document.getElementById('btnDeleteMany').onclick = async () => {
+        const selectedCheckboxes = document.querySelectorAll('.continent-checkbox:checked');
+        const idsToDelete = Array.from(selectedCheckboxes).map(checkbox => checkbox.closest('tr').dataset.id);
+        if (idsToDelete.length > 0 && confirm('Supprimer les continents sélectionnés ?')) {
+            await Promise.all(idsToDelete.map(id => fetch(`${API_URL}/${id}`, { method: 'DELETE' })));
+            fetchContinents();
+        }
+    };
+    fetchContinents();
+    </script>
+</body>
+
+</html>
